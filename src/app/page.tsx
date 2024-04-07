@@ -1,44 +1,50 @@
 "use client";
-import Image from "next/image";
-import styles from "./page.module.css";
-import { use, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+} from "@chakra-ui/react";
+import { UserTabPanel } from "./_components/UserTabPanel";
 
 export default function Home() {
-  const fetchTest = async () => {
-    const res = await fetch("/api/subscribe");
-    const data = await res.json();
-    console.log(data);
-  };
-
-  useEffect(() => {
-    fetchTest();
-  }, []);
-
   return (
-    <div>
-      <h1>Stripe test</h1>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: "10px",
-        }}
-      >
-        <div>
-          <button
-            style={{
-              padding: "6px 12px",
-            }}
-          >
-            サブスク開始 or サブスク解約
-          </button>
-        </div>
-        <div>
-          <p>現在の契約状況</p>
-          {/* 契約状況 */}
-          <div></div>
-        </div>
-      </div>
-    </div>
+    <Flex direction="column">
+      <Text fontSize="3xl">Stripe test</Text>
+      <Flex direction="column" px="6px" py="12px">
+        <Tabs>
+          <TabList>
+            <Tab>user</Tab>
+            <Tab>subscribe</Tab>
+            <Tab>product</Tab>
+          </TabList>
+          <TabPanels>
+            <UserTabPanel />
+            <TabPanel>
+              <Flex direction="column">
+                <Box>
+                  <Button px="6px" py="12px">
+                    サブスク開始 or サブスク解約
+                  </Button>
+                </Box>
+                <Box>
+                  <Text>現在の契約状況</Text>
+                  {/* 契約状況 */}
+                  <div></div>
+                </Box>
+              </Flex>
+            </TabPanel>
+            <TabPanel>
+              <Flex>product</Flex>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Flex>
+    </Flex>
   );
 }

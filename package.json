@@ -9,16 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@stripe/react-stripe-js": "^2.6.2",
+    "@stripe/stripe-js": "^3.2.0",
+    "@typescript-eslint/parser": "^7.5.0",
+    "axios": "^1.6.8",
+    "framer-motion": "^11.0.25",
+    "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.1.4"
+    "stripe": "^14.24.0"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.1.4"
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.1.4",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "typescript": "^5"
   }
 }
