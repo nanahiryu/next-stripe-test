@@ -9,17 +9,36 @@ export const POST = async (req: Request) => {
   // reqからusername, emailを取得
   const { username, email }: CreateCustomerRequestData = await req.json();
   if (!username || !email) {
-    console.log("username or email is not found.");
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "username or email is not found.",
+      },
+      {
+        status: 400,
+      }
+    );
   }
   if (typeof username !== "string" || typeof email !== "string") {
-    console.log("username or email is not string.");
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "username or email is not string.",
+      },
+      {
+        status: 400,
+      }
+    );
   }
   // Stripeの処理を書く
   const stripe_secret_key = process.env.STRIPE_SECRET_KEY;
   if (!stripe_secret_key) {
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "Stripe secret key is not found.",
+      },
+      {
+        status: 500,
+      }
+    );
   }
   const stripe = new Stripe(stripe_secret_key);
   // stripeのcustomerをemailで検索
@@ -27,8 +46,14 @@ export const POST = async (req: Request) => {
     query: `email:\'${email}\'`,
   });
   if (customers.data.length > 0) {
-    console.log("customer already exists. email: ", email);
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "customer already exists.",
+      },
+      {
+        status: 400,
+      }
+    );
   }
 
   // stripeのcustomerを作成
@@ -41,13 +66,22 @@ export const POST = async (req: Request) => {
   const createdEmail = res.email;
 
   if (!stripeID || !createdName || !createdEmail) {
-    console.log("stripeID or createdName or createdEmail is not found.");
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "stripeID or createdName or createdEmail is not found.",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 
-  return NextResponse.json<CreateCustomerResponseData>({
-    stripeID: stripeID,
-    name: createdName,
-    email: createdEmail,
-  });
+  return NextResponse.json<CreateCustomerResponseData>(
+    {
+      stripeID: stripeID,
+      name: createdName,
+      email: createdEmail,
+    },
+    { status: 200 }
+  );
 };

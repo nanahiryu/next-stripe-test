@@ -11,31 +11,47 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.error();
   }
   const stripe = new Stripe(stripe_secret_key);
-  const customerList = await stripe.customers.list();
-  console.log("customerList: ", customerList);
   // stripeのcustomerをemailで検索
-  console.log("query: ", `email:\'${email}\'`);
   const customers = await stripe.customers.search({
     query: `email:\'${email}\'`,
   });
+
+  // 見つかったcustomerの個数でエラー処理
   if (customers.data.length == 0) {
-    console.log("customer already exists. email: ", email);
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "customer not found. email: " + email,
+      },
+      {
+        status: 500,
+      }
+    );
   }
   if (customers.data.length > 1) {
-    console.log("customer is not found. email: ", email);
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "multiple customer found. email: " + email,
+      },
+      {
+        status: 400,
+      }
+    );
   }
-  console.log("customers: ", customers);
+
   const customer = customers.data[0];
-  console.log("customer: ", customer);
   const stripeID = customer.id;
   const createdName = customer.name;
   const createdEmail = customer.email;
 
   if (!stripeID || !createdName || !createdEmail) {
-    console.log("stripeID or createdName or createdEmail is not found.");
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: "stripeID or createdName or createdEmail is not found.",
+      },
+      {
+        status: 400,
+      }
+    );
   }
 
   return NextResponse.json<SearchCustomerResponseData>({
